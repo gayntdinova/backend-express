@@ -8,7 +8,19 @@ db.run(`CREATE TABLE IF NOT EXISTS users (
    id INTEGER PRIMARY KEY AUTOINCREMENT,
    name text)`);
 
-let a = [];
+
+let a = {items : [{
+    "id": 1,
+    "name": "name"
+  },
+    {
+      "id": 2,
+      "name": "Ирина"
+    },
+    {
+      "id": 3,
+      "name": "Денис"
+    }]};
 /* GET users listing. */
 router.get('/', function(req, res, next) {
     db.all("SELECT id, name FROM users", [], (err, rows) => {
@@ -18,18 +30,6 @@ router.get('/', function(req, res, next) {
         res.send(rows);
       }
     });
-   a = {items : [{
-      "id": 1,
-      "name": "name"
-    },
-      {
-        "id": 2,
-        "name": "Ирина"
-      },
-      {
-        "id": 3,
-        "name": "Денис"
-      }]};
   res.send(a);
 });
 
@@ -44,15 +44,12 @@ router.post('/', function(req, res, next) {
 });
 
 router.get('/:id', function(req, res, next) {
-  let id = req.params.id;
-  let search = false;
-  for (let i of Object.keys(a)) {
-    if (id == i){
-      search = true;
-    }
-  }
-  if (!search){
-    res.status(404).send('Not Found');
+  let id = parseInt(req.params.id);
+  const user = a.items.find((u) => u.id === id);
+  if (!user) {
+    return res.status(404).json({})
+  }else{
+    res.json(user);
   }
 })
 
